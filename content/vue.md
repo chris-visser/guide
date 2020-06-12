@@ -144,15 +144,69 @@ Meteor.startup(() => {
 That's it. You're set. No special stuff. Just use the router as you always do in other
  Vue apps: `<router-view>` and `<router-link>`.
 
-<h2 id="design-systems">Design Systems</h2>
- 
-<h3>Vuetify</h3>
-
-<h3>Bootstrap Vue</h3>
- 
 <h2>Integrating API's</h2>
 
-<h3>Minimongo, Methods and DDP</h3>
+By default Meteor uses Minimongo + DDP to communicate data from server to clientside. 
+It's a very powerful feature, but very often, you might want to use a different tool like 
+ApolloJS or a simple Rest API.
+
+This section will explain the practices of how to integrate these tools with Meteor + Vue.
+
+<h3 id="meteor-methods">Meteor Methods</h3>
+
+Meteor Methods are Meteor's solution to a Rest API - though they are much more powerful. 
+
+<h3 id="minimongo-and-ddp">Minimongo and DDP</h3>
+
+- **Minimongo** is Meteor's Realtime client- and server-side 'cache'. Though it works seamlessly 
+on top of [MongoDB](https://www.mongodb.com/) - which is the recommended database - 
+it also works nicely without it.
+
+- **DDP** is an API protocol which is used by Minimongo to send data in realtime to and from the client. 
+
+Minimongo and DDP work together to provide the whole back to front realtime API - 
+allowing for full-stack reactivity. Essentially you subscribe to data with parameters. On the 
+server you can use a publication function with these parameters to query Minimongo, 
+by returning the result, it 'magically' fills Minimongo on the client. 
+Since Minimongo is reactive, you can just connect it to your components.
+
+Here's a short example of an endpoint / publication on the server:
+
+```js
+import ProductsCollection from './collections/products'
+
+Meteor.publish('top20Products', function(params) {
+  return ProductsCollection.find({}, { limit: 20, sort: { rank: -1 } })
+})
+```
+
+In your Vue component you can now do this:
+
+```vue
+<template>
+<ul>
+  <li v-for="item in items" :key="item.id">{{ item.title }}</li>
+</ul>
+</template>
+
+<script>
+import ProductsCollection from './collections/products'
+export default {
+  meteor: {
+    $subscribe: {
+      'top20Products': [],
+    },
+    items () {
+      return ProductsCollection.find({})
+    },
+  },
+}
+</script>
+```
+
+The above Vue component subscribes to the `top20Products` publication. This 'magically' puts 
+products from the server into the client products collection. The component returns the result 
+from the clientside `ProductsCollection` as `items` to the template.
 
 <h3>Apollo Server / Client</h3>
 
