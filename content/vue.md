@@ -3,30 +3,26 @@ title: Vue
 description: How to use Vue.js with Meteor.
 ---
 <h2 id="introduction">Introduction</h2>
+
+Vue has an excellent [guide and documentation](https://vuejs.org/v2/guide/). 
+This guide is about integrating it with Meteor. That's why we take a full-stack approach 
+where Meteor serves as the main platform with Vue as its render engine.
+
+<h3 id="why-vue">Vue with Meteor?</h3>
+
 [Vue](https://vuejs.org/v2/guide/) (pronounced /vjuː/, like view) is a progressive framework for building user interfaces. 
 Unlike other monolithic frameworks, Vue is designed from the ground up to be incrementally adoptable. 
 The core library is focused on the view layer only, and is easy to pick up and integrate 
-with other libraries or existing projects. On the other hand, Vue is also perfectly 
-capable of powering sophisticated Single-Page Applications when used in combination 
-with [modern tooling](https://vuejs.org/v2/guide/single-file-components.html) 
-and [supporting libraries](https://github.com/vuejs/awesome-vue#components--libraries).
+with other libraries or existing projects. 
 
-Vue has an excellent [guide and documentation](https://vuejs.org/v2/guide/). This guide is about integrating it with Meteor.
-
-<h3 id="why-use-vue-with-meteor">Why use Vue with Meteor</h3>
-
-Vue is a frontend library, like React, Blaze and Angular. 
-
-Some really nice frameworks exist already for Vue. So why use Meteor? Lets take 
-[Nuxt.js](https://nuxtjs.org) for example. Nuxt aims to create a UI framework flexible 
-enough for use in any scenario, but rigid enough to provide solid best practices. 
-Nuxt is just one piece of the puzzle though! We still need a data-layer. A proper BFF (Backend 
-For Frontend). This is where Meteor comes in. Vue and Meteor is magic. Even Nuxt + Meteor is 
-a very good option if you want to have your render layer and API strictly separate!
-
-Meteor's build tool and Pub/Sub API (or Apollo) provides Vue with an API that you 
-would normally have to integrate and discover for yourself. Meteor greatly reduces the amount 
-of code you have to write and provides best practices for almost any use-case you can think of.
+Some really nice Vue frameworks like [Nuxt.js](https://nuxtjs.org) and 
+[Gridsome](https://gridsome.org/) exist already for Vue. So why use Vue with Meteor? 
+Meteor is more than just a rendering framework. See it as a BFF (Backend For Frontend) 
+with the option to run Vue on top of it. It provides different layers of API allowing you to decide 
+what you use of it.  
+It provides Vue with very powerful tools that allow you build any sort of API in 
+no-time and with almost no code. Meteor found the balance between zero-config, zero-boilerplate 
+setups and being able to go custom in case you need it. 
 
 <h2 id="getting-started">Getting Started</h2>
 
@@ -154,13 +150,60 @@ This section will explain the practices of how to integrate these tools with Met
 
 <h3 id="meteor-methods">Meteor Methods</h3>
 
-Meteor Methods are Meteor's solution to a Rest API - though they are much more powerful. 
+Meteor Methods are Meteor's alternative to Rest API methods. Methods are much 
+simpler and have a lot of powerful features that no other framework provides with zero 
+boilerplate. Things that are never worth time-wise and complexity wise, but greatly 
+improve user experience. To mention one feature: Its integration with Minimongo to provide 
+[Optimistic UI](https://blog.meteor.com/optimistic-ui-with-meteor-67b5a78c3fcf).
+
+So how do Meteor methods work in Vue? Simple:
+
+Lets assume you have the below method. That's essentially your API "endpoint":
+
+```js
+Meteor.methods({
+  createArticle(article) {
+    schema.validate(article)
+    ArticlesCollection.insert(article)
+  }
+})
+```
+
+Here's a link to the full guide on [Meteor Methods](/methods.html)
+for a full understanding on how Meteor methods work
+
+In Vue, you could just call it in a Vue method like below:
+```html
+<script>
+ import { Meteor } from 'meteor/meteor'
+
+ export default {
+  data() {
+    return {
+      title: '',
+      body: ''
+    }
+  },
+  methods: {
+    handleSubmit() {
+      Meteor.call('createArticle', {
+        title: this.title,
+        body: this.body
+      })
+    }
+  }
+ }
+</script>
+```
+
+That's it. No determining the JSON structure, figuring out headers, implementing clients. 
+It just works.
 
 <h3 id="minimongo-and-ddp">Minimongo and DDP</h3>
 
-- **Minimongo** is Meteor's Realtime client- and server-side 'cache'. Though it works seamlessly 
-on top of [MongoDB](https://www.mongodb.com/) - which is the recommended database - 
-it also works nicely without it.
+- **Minimongo** is Meteor's Realtime client- and server-side 'cache'. It works seamlessly 
+with [MongoDB](https://www.mongodb.com/), but its not a requirement. 
+It also works nicely without it.
 
 - **DDP** is an API protocol which is used by Minimongo to send data in realtime to and from the client. 
 
@@ -169,6 +212,12 @@ allowing for full-stack reactivity. Essentially you subscribe to data with param
 server you can use a publication function with these parameters to query Minimongo, 
 by returning the result, it 'magically' fills Minimongo on the client. 
 Since Minimongo is reactive, you can just connect it to your components.
+
+Minimongo + Methods and DDP provide a powerful feature called 
+[Optimistic UI](https://blog.meteor.com/optimistic-ui-with-meteor-67b5a78c3fcf).
+Check it out. It greatly enhances user experience and the perception of "instant updates". 
+You are getting this without having to do anything!
+
 
 Here's a short example of an endpoint / publication on the server:
 
@@ -182,7 +231,7 @@ Meteor.publish('top20Products', function(params) {
 
 In your Vue component you can now do this:
 
-```vue
+```html
 <template>
 <ul>
   <li v-for="item in items" :key="item.id">{{ item.title }}</li>
@@ -210,21 +259,139 @@ from the clientside `ProductsCollection` as `items` to the template.
 
 <h3>Apollo Server / Client</h3>
 
+-- coming up --
+
 <h3>Rest API's</h3>
 
-Meteor supports multiple types of API. For example, you can use it with Apollo Server + Client, 
-or as a Rest API. However, by default, Meteor also uses its own protocol called DDP.
+-- coming up --
 
-<h2>Best Practices</h2>
+<h2 id="best-practices">Best Practices</h2>
 
-There are many ways to structure any app. That also counts for Meteor and for Vue. But over time 
-we did figure out some practices that work well for any project.
+Meteor nor Vue enforces you to structure your project and code a certain way. However, 
+there are practices that really work well in most cases. 
 
-<h3></h3>
+This section highlights some of these best practices for Meteor in combination with Vue. 
+Vue has a strong [Vue Style Guide](https://vuejs.org/v2/style-guide/). It's a 
+recommended read, because the rules in that guide form the base of this section.
 
-As you can see the routes are being imported
+> If you spot any inconsistencies between this guide and the Vue guide, then please consider 
+> contributing to this guide or to create an issue on [this guide's repository](https://github.com/meteor/guide)
+
+<h3 id="smart-vs-reusable-components">Smart vs Reusable components</h3>
+
+Meteor has a [very nice guide on smart vs reusable components](/ui-ux.html#components).
+It follows the principles of SOLID and DRY, where functions, classes and components should 
+ideally just do 1 thing. For components that means that some of them 
+should just be responsible for providing design with html (the Design System Implementation) 
+and others to connect the environment, app and 
+[domain state](https://medium.com/@abhiaiyer/domain-state-vs-ui-state-768c1271a41d). 
+
+Lets refer to them as: 
+
+- **Domain component**: Domain + App integration
+- **Design component**: Design System Implementation 
+
+This component contains both Design and Domain stuff:
+
+```html
+<template>
+  <div>
+    <ul v-if="products.length">
+      <li v-for="product in products" :key="product.id">{{ product.title }}</li>
+    </ul>
+  </div>
+</template>
+
+<script>
+  import ProductsCollection from '../collections/products'
+
+ export default {
+  meteor: {
+    $subscribe: {
+      products: []
+    },
+    products() {
+      return ProductsCollection.find()
+    }
+  }
+ }
+</script>
+
+<style scoped>
+ul {
+  padding: 0;
+  list-style: none;
+}
+</style>
+```
+**Do:**
+
+*1 Component for domain state*
+```html
+<template>
+  <div>
+    <products-list v-if="products.length" :items="products">
+  </div>
+</template>
+
+<script>
+  import ProductsCollection from '../collections/products'
+
+ export default {
+  meteor: {
+    $subscribe: {
+      products: []
+    },
+    products() {
+      // Ensure that the products have the properties to fit into a standard list component
+      return ProductsCollection.find().map(product => ({
+        ...product,
+        title: product.name
+      }))
+    }
+  }
+ }
+</script>
+```
+
+*1 component for the default composition of a list:*
+```html
+<template>
+  <ul>
+    <li v-for="item in items" :key="item.id">{{ item.title }}</li>
+  </ul>
+</template>
+
+<script>
+export default {
+  props: {
+    items: () => []
+  }
+}
+</script>
+
+<style scoped>
+ul {
+  padding: 0;
+  list-style: none;
+}
+</style>
+```
+
+By doing this, you will be able to easily reuse your design implementation on other applications 
+that are not written with Meteor's Tracker functionality. Or the other way round. You replace 
+ your design components without having to rewire your API. If you nail this, your project will 
+become highly scalable and relatively easy to refactor.
+
+<h4>Domain components</h4>
+
 
 <h3>Naming conventions</h3>
+
+As described in the Vue Style guide - Use multi-word component names. This will not only 
+make it easy to distinguish components from html elements, but also helps you structure 
+files and folders based on clear 'categories' of components.
+
 
 <h3>Folder structure</h3>
 
