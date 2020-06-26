@@ -10,19 +10,31 @@ where Meteor serves as the main platform with Vue as its render engine.
 
 <h3 id="why-vue">Vue with Meteor?</h3>
 
-[Vue](https://vuejs.org/v2/guide/) (pronounced /vjuː/, like view) is a progressive framework for building user interfaces. 
-Unlike other monolithic frameworks, Vue is designed from the ground up to be incrementally adoptable. 
-The core library is focused on the view layer only, and is easy to pick up and integrate 
-with other libraries or existing projects. 
+[Vue](https://vuejs.org/v2/guide/) (pronounced /vjuː/, like view) is a progressive framework 
+for building user interfaces. Some really nice Vue frameworks like [Nuxt.js](https://nuxtjs.org) 
+and [Gridsome](https://gridsome.org/) exist already. So why use Vue with Meteor? 
 
-Some really nice Vue frameworks like [Nuxt.js](https://nuxtjs.org) and 
-[Gridsome](https://gridsome.org/) exist already for Vue. So why use Vue with Meteor? 
-Meteor is more than just a rendering framework. See it as a BFF (Backend For Frontend) 
-with the option to run Vue on top of it. It provides different layers of API allowing you to decide 
-what you use of it.  
-It provides Vue with very powerful tools that allow you build any sort of API in 
-no-time and with almost no code. Meteor found the balance between zero-config, zero-boilerplate 
-setups and being able to go custom in case you need it. 
+
+
+
+Meteor is a platform that can be used as BFF (Backend For Frontend API) that supports one or more 
+external Vue applications which are built for example with Nuxt or Gridsome. It could also 
+be used as a full-stack application where the API and app work on 1 container. Both approaches 
+have pro's and con's. In this guide both options will be described. 
+
+integrations for all parts of the application. 
+Its default is a nicely integrated full-stack application that works without boilerplate or 
+configuration. With one command you will have a fully functional Vue application with an API.
+
+You could also go
+
+For example, you could use Vue on top of Meteor as one stack. Meteor will take care of 
+building, HMR, the API and guidance on how to fit it all together. No webpack configuration, 
+no building of Rest endpoints, no figuring out which API framework to use and how to sync 
+clientside data with the server.
+
+You could also run a separate Vue app with for example Nuxt or Gridsome and have Meteor run 
+as a BFF (Backend For Frontend) with an optimized API.
 
 <h2 id="getting-started">Getting Started</h2>
 
@@ -291,8 +303,9 @@ Lets refer to them as:
 - **Domain component**: Domain + App integration
 - **Design component**: Design System Implementation 
 
-This component contains both Design and Domain stuff:
+This component contains both Design and Domain stuff. 
 
+**Don't do this!**
 ```html
 <template>
   <div>
@@ -324,14 +337,18 @@ ul {
 }
 </style>
 ```
-**Do:**
 
-*1 Component for domain state*
+It might be tempting to structure components like above, but there are downsides. 
+Consider splitting up these components based on if they are Design or Domain types:
+
+*Domain Component / Container. Takes care of connecting Meteor and composes Design components* 
 ```html
 <template>
-  <div>
-    <products-list v-if="products.length" :items="products">
-  </div>
+  <overview-wrapper>
+    <product-list v-if="products.length">
+      <products-list-item v-for="product in products" :title="product.title">
+    </product-list>
+  </overview-wrapper>
 </template>
 
 <script>
@@ -354,21 +371,30 @@ ul {
 </script>
 ```
 
-*1 component for the default composition of a list:*
+Design components. Purely style and markup (no Meteor):
+
+*overview-wrapper*
+```html
+<template>
+  <section class="overview">
+    <slot />
+  </section>
+</template>
+
+<style scoped>
+.overview {
+  margin: 20px auto;
+}
+</style>
+```
+
+*product-list*
 ```html
 <template>
   <ul>
-    <li v-for="item in items" :key="item.id">{{ item.title }}</li>
+    <slot />
   </ul>
 </template>
-
-<script>
-export default {
-  props: {
-    items: () => []
-  }
-}
-</script>
 
 <style scoped>
 ul {
@@ -378,13 +404,34 @@ ul {
 </style>
 ```
 
+*product-list-item*
+```html
+<template>
+  <li>
+    {{ title }}
+  </li>
+</template>
+
+<script>
+export default {
+  props: {
+    title: String
+  }
+}
+</script>
+
+<style scoped>
+li {
+  position: relative;
+  background-color: #cccccc;
+}
+</style>
+```
+
 By doing this, you will be able to easily reuse your design implementation on other applications 
 that are not written with Meteor's Tracker functionality. Or the other way round. You replace 
  your design components without having to rewire your API. If you nail this, your project will 
 become highly scalable and relatively easy to refactor.
-
-<h4>Domain components</h4>
-
 
 <h3>Naming conventions</h3>
 
