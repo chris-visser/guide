@@ -429,9 +429,11 @@ li {
 ```
 
 By doing this, you will be able to easily reuse your design implementation on other applications 
-that are not written with Meteor's Tracker functionality. Or the other way round. You replace 
- your design components without having to rewire your API. If you nail this, your project will 
-become highly scalable and relatively easy to refactor.
+that are not written with Meteor's Tracker functionality. Its quite common to build these component 
+as a separate package that represents a design system. Examples of these are Vuetify and Bootstrap Vue. 
+Another reason is reducing depency specifically on a backend (like Meteor). You can now 
+switch API tooling just by changing the containers part, but the components will remain untouched. 
+If you nail this, your project will become highly scalable and relatively easy to refactor and maintain.
 
 <h3>Naming conventions</h3>
 
