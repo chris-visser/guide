@@ -432,8 +432,8 @@ By splitting design from domain state, you will be able to easily reuse your Vue
 in the form of a design system like [Vuetify](https://vuetifyjs.com/en/) and [Bootstrap Vue](https://bootstrap-vue.org/). 
 
 Another reason is reducing dependency specifically on a backend (like Meteor). 
-You can now switch API tooling just by changing the containers part, but the components will 
-remain untouched. If you nail this, your project will become highly scalable and relatively 
+You can now switch API tooling just by changing the containers part while the design components 
+will remain untouched. If you nail this, your project will become highly scalable and relatively 
 easy to refactor and maintain.
 
 <h3>Naming conventions</h3>
