@@ -428,12 +428,13 @@ li {
 </style>
 ```
 
-By doing this, you will be able to easily reuse your design implementation on other applications 
-that are not written with Meteor's Tracker functionality. Its quite common to build these component 
-as a separate package that represents a design system. Examples of these are Vuetify and Bootstrap Vue. 
-Another reason is reducing depency specifically on a backend (like Meteor). You can now 
-switch API tooling just by changing the containers part, but the components will remain untouched. 
-If you nail this, your project will become highly scalable and relatively easy to refactor and maintain.
+By splitting design from domain state, you will be able to easily reuse your Vue design implementation on other applications 
+in the form of a design system like [Vuetify](https://vuetifyjs.com/en/) and [Bootstrap Vue](https://bootstrap-vue.org/). 
+
+Another reason is reducing dependency specifically on a backend (like Meteor). 
+You can now switch API tooling just by changing the containers part, but the components will 
+remain untouched. If you nail this, your project will become highly scalable and relatively 
+easy to refactor and maintain.
 
 <h3>Naming conventions</h3>
 
