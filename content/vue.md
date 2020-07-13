@@ -14,27 +14,14 @@ where Meteor serves as the main platform with Vue as its render engine.
 for building user interfaces. Some really nice Vue frameworks like [Nuxt.js](https://nuxtjs.org) 
 and [Gridsome](https://gridsome.org/) exist already. So why use Vue with Meteor? 
 
+Meteor is a platform that can be used as a full-stack application where the API and app 
+work as one application. It can also be used as BFF (Backend For Frontend API) that serves 
+one or more external Vue based applications which are built for example with Nuxt or Gridsome. 
+Both approaches have pro's and con's. 
 
-
-
-Meteor is a platform that can be used as BFF (Backend For Frontend API) that supports one or more 
-external Vue applications which are built for example with Nuxt or Gridsome. It could also 
-be used as a full-stack application where the API and app work on 1 container. Both approaches 
-have pro's and con's. In this guide both options will be described. 
-
-integrations for all parts of the application. 
-Its default is a nicely integrated full-stack application that works without boilerplate or 
-configuration. With one command you will have a fully functional Vue application with an API.
-
-You could also go
-
-For example, you could use Vue on top of Meteor as one stack. Meteor will take care of 
-building, HMR, the API and guidance on how to fit it all together. No webpack configuration, 
-no building of Rest endpoints, no figuring out which API framework to use and how to sync 
-clientside data with the server.
-
-You could also run a separate Vue app with for example Nuxt or Gridsome and have Meteor run 
-as a BFF (Backend For Frontend) with an optimized API.
+Most of this guide will be focusing on integrating Vue as part of Meteor, since that's the default 
+and the recommended approach. The [Meteor as API only](#meteor-as-api-only) section 
+will cover how to use Meteor as an API only / BFF app for Vue applications. 
 
 <h2 id="getting-started">Getting Started</h2>
 
@@ -152,7 +139,7 @@ Meteor.startup(() => {
 That's it. You're set. No special stuff. Just use the router as you always do in other
  Vue apps: `<router-view>` and `<router-link>`.
 
-<h2>Integrating API's</h2>
+<h2 id="integrating-apis">Integrating API's</h2>
 
 By default Meteor uses Minimongo + DDP to communicate data from server to clientside. 
 It's a very powerful feature, but very often, you might want to use a different tool like 
@@ -269,11 +256,11 @@ The above Vue component subscribes to the `top20Products` publication. This 'mag
 products from the server into the client products collection. The component returns the result 
 from the clientside `ProductsCollection` as `items` to the template.
 
-<h3>Apollo Server / Client</h3>
+<h3 id="apollo-server-client">Apollo Server / Client</h3>
 
 -- coming up --
 
-<h3>Rest API's</h3>
+<h3 id="rest-apis">Rest API's</h3>
 
 -- coming up --
 
@@ -298,10 +285,10 @@ should just be responsible for providing design with html (the Design System Imp
 and others to connect the environment, app and 
 [domain state](https://medium.com/@abhiaiyer/domain-state-vs-ui-state-768c1271a41d). 
 
-Lets refer to them as: 
+In short: 
 
-- **Domain component**: Domain + App integration
-- **Design component**: Design System Implementation 
+- **Design components** implement the design system 
+- **Domain components** connect environment, app and domain state with design components
 
 This component contains both Design and Domain stuff. 
 
@@ -436,31 +423,31 @@ You can now switch API tooling just by changing the containers part while the de
 will remain untouched. If you nail this, your project will become highly scalable and relatively 
 easy to refactor and maintain.
 
-<h3>Naming conventions</h3>
+<h3 id="naming-conventions">Naming conventions</h3>
 
 As described in the Vue Style guide - Use multi-word component names. This will not only 
 make it easy to distinguish components from html elements, but also helps you structure 
 files and folders based on clear 'categories' of components.
 
 
-<h3>Folder structure</h3>
+<h3 id="folder-structure">Folder structure</h3>
 
-<h3>Vue + Minimongo</h3>
+<h3 id="vue-minimongo">Vue + Minimongo</h3>
 
-<h2>SSR and Hydration</h2>
+<h2 id="ssr-and-hydration">SSR and Hydration</h2>
 
-<h2>Meteor as API only</h2>
+<h2 id="meteor-as-api-only">Meteor as API only</h2>
 
-<h3>Integration in Nuxt</h3>
+<h3 id="integration-in-nuxt">Integration in Nuxt</h3>
 
 ```sh
 npm i @nuxtjs/meteor
 ```
 
-<h2>Boilerplates</h2>
+<!--<h2 id="boilerplate">Boilerplates</h2>
 
-<h3>Meteor + Vue + Minimongo</h3>
+<h3 id="meteor-vue-minimongo">Meteor + Vue + Minimongo</h3>
 
-<h3>Meteor + Vue + Apollo</h3>
+<h3 id="meteor-vue-apollo">Meteor + Vue + Apollo</h3>
 
-<h3>Meteor + Vue + Rest</h3>
+<h3 id="meteor-vue-rest">Meteor + Vue + Rest</h3>-->
